@@ -1,0 +1,902 @@
+
+Q.1)Write a Java Servlet Program to implement a dynamic Html using Servlet (username and password should be accepted using HTML and displayed using Servlet).
+ Aim
+To develop a Java Servlet application that accepts a username and password from an HTML form and displays them on a web page.
+
+Objectives
+1.	To create an HTML form for user login.
+2.	To implement a Java Servlet that retrieves form data using HttpServletRequest.
+3.	To display the submitted data on a web page using PrintWriter.
+4.	To configure servlet mapping in web.xml for handling form submissions.
+
+Code:
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+</head>
+<body>
+    <h2>Login Page</h2>
+    <form action="LoginServlet" method="post">
+        <label>Username:</label>
+        <input type="text" name="username" ><br><br>
+
+        <label>Password:</label>
+        <input type="password" name="password" ><br><br>
+
+        <input type="submit" value="Login">
+    </form>
+
+</body>
+</html>
+
+LoginServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class LoginServlet extends HttpServlet {
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        out.println("<html><body>");
+        out.println("<h2>Login Details</h2>");
+        out.println("<p>Username: " + username + "</p>");
+        out.println("<p>Password: " + password + "</p>");
+        out.println("</body></html>");
+    }
+}
+
+web.xml
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+Methods:
+1.	doPost(HttpServletRequest request, HttpServletResponse response) – This method is overridden from the HttpServlet class and is used to handle HTTP POST requests. In this program, it processes the form data submitted from the HTML login page.
+2.	getParameter(String name) – This method is used to retrieve the value of a form field from the HTTP request. In this code, it is used to get the username and password entered by the user in the login form.
+3.	setContentType(String type) – This method is used to define the content type of the response sent to the client. Here, "text/html" is set so that the browser interprets the response as an HTML page.
+4.	getWriter() – This method returns a PrintWriter object, which is used to send character text to the client. It allows us to write HTML code directly into the response.
+5.	println(String s) – This method of the PrintWriter class is used to print strings to the output stream. In this program, it is used to display the HTML content along with the submitted username and password.
+
+
+Conclusion
+This program demonstrates how to create a simple login form using HTML and handle the submitted data with a Java Servlet. It uses HttpServletRequest to retrieve form parameters and displays them on a web page using PrintWriter. The web.xml file maps the servlet to handle requests from the HTML form.
+
+
+Output:
+ 
+
+ 
+ 
+
+Q.2) Write a Java Servlet Program to Auto Web Page Refresh (Consider a webpage which is displaying Date and time or stock market status. For all such type of pages, you would need to refresh your webpage regularly; Java Servlet make this job easy by providing refresh automatically after a given interval).
+Aim
+To create a Java Servlet that automatically refreshes the webpage at a fixed interval and displays the current date and time.
+
+Objectives
+1.	To learn how to set HTTP response headers in a servlet.
+2.	To implement automatic page refresh functionality using setIntHeader.
+3.	To display real-time date and time updates using Java’s Date class.
+4.	To configure servlet mapping in web.xml for handling requests.
+
+Code:
+AutoRefreshServlet.java
+import java.io.*;
+import java.util.Date;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class AutoRefreshServlet extends HttpServlet {
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+        response.setIntHeader("Refresh", 5);
+
+        PrintWriter out = response.getWriter();
+        
+        Date currentDate = new Date();
+
+        out.println("<html><body style='font-family:Arial;'>");
+        out.println("<h2>Auto Refresh Example</h2>");
+        out.println("<p>This page refreshes every 5 seconds.</p>");
+        out.println("<h3>Current Date & Time: " + currentDate.toString() + "</h3>");
+        out.println("</body></html>");
+    }
+}
+
+web.xml
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>AutoRefreshServlet</servlet-name>
+        <servlet-class>AutoRefreshServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AutoRefreshServlet</servlet-name>
+        <url-pattern>/AutoRefreshServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+
+Methods:
+1.	doGet(HttpServletRequest request, HttpServletResponse response) – This method is overridden to handle HTTP GET requests. It is used here to send HTML content to the client and refresh the page automatically.
+2.	setContentType(String type) – Sets the content type of the response. In this program, "text/html" is set to ensure the browser interprets the response as HTML.
+3.	setIntHeader(String name, int value) – Sets an integer header in the response. Here, "Refresh" is set to 5 so the page reloads every 5 seconds.
+4.	getWriter() – Returns a PrintWriter object for sending character data to the client.
+5.	println(String s) – Prints the given string (including HTML code) to the output stream.
+6.	Date() Constructor – Creates a new Date object representing the current date and time.
+7.	toString() – Converts the Date object into a string format for display.
+
+Conclusion
+This servlet demonstrates how to automatically refresh a web page at a set time interval using the "Refresh" header. It continuously displays the current date and time, which updates every few seconds, making it useful for real-time monitoring applications like clocks, dashboards, or live feeds.
+
+Output:
+ 
+ 
+
+Q.3) Write a Java Servlet Program using Cookie to remember user preference.
+Aim
+To create a Java Servlet application that stores the user’s background color preference using cookies and applies it automatically on future visits.
+
+Objectives
+1.	To design an HTML form that allows the user to choose a background color.
+2.	To use cookies in a servlet to store and retrieve user preferences.
+3.	To implement both doPost() and doGet() methods for saving and displaying preferences.
+4.	To configure servlet mapping in web.xml for proper request handling.
+
+Code:
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set Your Preference</title>
+</head>
+<body>
+    <h2>Choose Background Color</h2>
+    <form action="PreferenceServlet" method="post">
+        <label>Select Color:</label>
+        <select name="color">
+            <option value="white">White</option>
+            <option value="lightblue">Light Blue</option>
+            <option value="lightgreen">Light Green</option>
+            <option value="lightyellow">Light Yellow</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Save Preference">
+   
+   </form>
+</body>
+</html>
+
+PreferenceServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class PreferenceServlet extends HttpServlet {
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String color = request.getParameter("color");
+
+        Cookie colorCookie = new Cookie("bgColor", color);
+        colorCookie.setMaxAge(60 * 60 * 24 * 7); // store for 1 week
+        response.addCookie(colorCookie);
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("<html><body style='background-color:" + color + "; font-family:Arial;'>");
+        out.println("<h2>Your preferred background color is saved!</h2>");
+        out.println("<p>Next time you visit, we will remember it.</p>");
+        out.println("<a href='PreferenceServlet'>Go to Home</a>");
+        out.println("</body></html>");
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String color = "white"; // default
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("bgColor")) {
+                    color = c.getValue();
+                }
+            }
+        }
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("<html><body style='background-color:" + color + "; font-family:Arial;'>");
+        out.println("<h2>Welcome Back!</h2>");
+        out.println("<p>Your saved background color is applied.</p>");
+        out.println("<a href='index.html'>Change Preference</a>");
+        out.println("</body></html>");
+    }
+}
+
+web.xml
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+        
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>PreferenceServlet</servlet-name>
+        <servlet-class>PreferenceServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PreferenceServlet</servlet-name>
+        <url-pattern>/PreferenceServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+Methods:
+1.	doPost(HttpServletRequest request, HttpServletResponse response) – Handles the POST request when the user submits their background color choice. It creates a cookie to store the selected color.
+2.	doGet(HttpServletRequest request, HttpServletResponse response) – Handles GET requests when the user visits the page. It retrieves the saved color from cookies and applies it to the background.
+3.	getParameter(String name) – Retrieves the selected color from the form submission.
+4.	Cookie(String name, String value) – Creates a new cookie with the given name and value.
+5.	setMaxAge(int seconds) – Sets the cookie’s lifetime in seconds. Here, it is set for one week (60*60*24*7).
+6.	addCookie(Cookie cookie) – Adds the cookie to the HTTP response so that it is stored in the client’s browser.
+7.	getCookies() – Retrieves all cookies sent by the client.
+
+8.	setContentType(String type) – Sets the type of the HTTP response (text/html in this program).
+9.	getWriter() – Returns a PrintWriter object to send output to the client.
+10.	println(String s) – Prints HTML code as a string to the response.
+
+
+Conclusion
+This servlet demonstrates how to store and retrieve user preferences using cookies. When a user selects a background color, it is stored in a cookie and automatically applied the next time they visit the page. This improves user experience by remembering personal choices across sessions.
+
+Output:
+ 
+
+ 
+ 
+
+Q.4) Write a Java Servlet program to track Http Session by accepting username and password using HTML and display the profile page on successful login.
+Aim
+To create a Java Servlet application that implements a login system using HTTP session tracking to display a personalized profile page after successful login.
+
+Objectives
+1.	To design an HTML login form for collecting username and password.
+2.	To validate login credentials in a servlet and create a session for authenticated users.
+3.	To use HttpSession to maintain login state between pages.
+4.	To restrict access to the profile page unless the user is logged in.
+5.	To configure servlet mapping in web.xml.
+
+Code:
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <form action="LoginServlet" method="post">
+        Username: <input type="text" name="username" required><br><br>
+        Password: <input type="password" name="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
+
+
+LoginServlet.java
+package mypack;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+public class LoginServlet extends HttpServlet {
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        if(username.equals("admin") && password.equals("1234")){
+            HttpSession session = request.getSession();
+            session.setAttribute("username", username);
+            response.sendRedirect("ProfileServlet");
+        } else {
+            out.println("<h3>Invalid username or password</h3>");
+            out.println("<a href='index.html'>Try Again</a>");
+        }
+    
+    }
+}
+ProfileServlet.java
+package mypack;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+public class ProfileServlet extends HttpServlet {
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        
+        HttpSession session = request.getSession(false);
+
+        if(session != null && session.getAttribute("username") != null){
+            String username = (String) session.getAttribute("username");
+            out.println("<h2>Welcome, " + username + "!</h2>");
+            out.println("<p>This is your profile page.</p>");
+        } 
+        else {
+            out.println("<h3>Please login first</h3>");
+           
+             out.println("<a href='index.html'>Login Here</a>");
+        }
+    }
+}
+
+web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>mypack.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>mypack.ProfileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfileServlet</servlet-name>
+        <url-pattern>/ProfileServlet</url-pattern>
+    
+          </servlet-mapping>
+
+</web-app>
+
+Methods:
+1.	doPost(HttpServletRequest request, HttpServletResponse response) – Handles the POST request from the login form, validates the credentials, and creates a session if authentication is successful.
+2.	doGet(HttpServletRequest request, HttpServletResponse response) – Handles GET requests to the profile page, checking whether a valid session exists.
+3.	getParameter(String name) – Retrieves form data (username and password) from the request.
+4.	getSession() – Creates a new session if one does not already exist.
+5.	getSession(boolean create) – Retrieves an existing session; returns null if no session exists and create is set to false.
+6.	setAttribute(String name, Object value) – Stores an attribute in the session (e.g., the username).
+7.	getAttribute(String name) – Retrieves the value of an attribute stored in the session.
+8.	sendRedirect(String location) – Redirects the client to another resource (here, the profile page).
+9.	setContentType(String type) – Defines the response content type as "text/html".
+10.	getWriter() – Returns a PrintWriter to send HTML output to the browser.
+
+Conclusion
+This servlet-based application implements session tracking to manage user login. When a user successfully logs in, an HttpSession is created to store their username. The profile page checks for this session to ensure only logged-in users can access it, demonstrating basic authentication and session management in Java Servlets.
+
+
+
+
+
+
+Output:
+ 
+
+ 
+
+
+On invalid login:
+ 
+
+
+
+ 
+ 
+
+Q.5) Write a JSP program to implement all the attributes of page directive tag.
+Aim
+To demonstrate the usage of JSP page directive attributes by displaying the current date and time, setting page metadata, and handling errors through a custom error page.
+
+Objectives
+1.	To use the JSP page directive and its attributes such as language, contentType, import, buffer, autoFlush, isThreadSafe, errorPage, and info.
+2.	To display the current date and time using imported Java classes in JSP.
+3.	To configure a custom error page using errorPage and isErrorPage attributes.
+4.	To understand how to handle runtime exceptions in JSP pages.
+
+Code:
+Index.jsp
+<%@ page 
+    language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"
+    import="java.util.Date, java.text.SimpleDateFormat"
+    buffer="8kb"
+    autoFlush="true"
+    isThreadSafe="true"
+    errorPage="error.jsp"
+    info="This page demonstrates page directive attributes."
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSP Page Directive Demo</title>
+
+</head>
+<body>
+    <h2>Welcome to JSP Page Directive Demo</h2>
+
+    <%
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        out.println("Current Date & Time: " + sdf.format(new Date()) + "<br>");
+    %>
+
+    <p>Page Info: This page demonstrates page directive attributes.</p>
+
+</body>
+</html>
+
+Error.jsp
+<%@ page isErrorPage="true" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error Page</title>
+</head>
+<body>
+    <h2>An Error Occurred</h2>
+    <p>Error Message: <%= exception.getMessage() %></p>
+</body>
+</html>
+
+Methods:
+1.	language="java" – Specifies the scripting language used in the JSP page.
+
+2.	contentType="text/html; charset=UTF-8" – Defines the MIME type and character encoding of the response.
+3.	pageEncoding="UTF-8" – Sets the JSP page's encoding format.
+4.	import="java.util.Date, java.text.SimpleDateFormat" – Imports Java classes to be used in the JSP scriptlets.
+5.	buffer="8kb" – Allocates an 8KB buffer for the response output.
+6.	autoFlush="true" – Automatically flushes the buffer when full.
+7.	isThreadSafe="true" – Specifies that the JSP page is thread-safe.
+8.	errorPage="error.jsp" – Defines the page to be displayed in case of an exception.
+9.	info="..." – Provides a description of the JSP page.
+10.	isErrorPage="true" – Used in Error.jsp to indicate it can access the exception implicit object.
+11.	SimpleDateFormat and Date classes – Used to format and display the current date and time.
+
+Conclusion
+This JSP application demonstrates the use of page directive attributes for configuring the page's behavior, importing Java classes, and defining error handling. The main JSP (Index.jsp) displays the current date and time, while Error.jsp serves as a custom error page, showing meaningful error messages to the user.
+
+Output:
+ 
+ 
+
+Q.6) Write a JSP Program to get student information through a HTML and create a JAVA Bean class, populate Bean and display the same information through another JSP.
+Aim
+To demonstrate the use of JavaBeans in JSP for capturing and displaying student information submitted through an HTML form.
+Objectives
+1.	To create a JavaBean class (Student.java) with private properties and public getter/setter methods.
+2.	To design an HTML form (studentForm.html) to collect student data.
+3.	To retrieve form data in a JSP page (displayStudent.jsp) and populate the JavaBean.
+4.	To display the stored data from the bean using getter methods.
+
+Code:
+Student.java
+package beans;
+
+public class Student {
+    private String name;
+    private String rollNo;
+    private String email;
+    private String course;
+
+    public Student() { }
+
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRollNo() {
+        return rollNo;
+    }
+    public void setRollNo(String rollNo) {
+        this.rollNo = rollNo;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+    public void setCourse(String course) {
+        this.course = course;
+    }
+}
+
+studentForm.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Form</title>
+</head>
+<body>
+    
+    <h2>Enter Student Information</h2>
+    <form action="displayStudent.jsp" method="post">
+        Name: <input type="text" name="name" required><br><br>
+        Roll No: <input type="text" name="rollNo" required><br><br>
+        Email: <input type="email" name="email" required><br><br>
+        Course: <input type="text" name="course" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+displayStudent.jsp
+<%@ page import="beans.Student" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+    Student student = new Student();
+    student.setName(request.getParameter("name"));
+    student.setRollNo(request.getParameter("rollNo"));
+    student.setEmail(request.getParameter("email"));
+    student.setCourse(request.getParameter("course"));
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Details</title>
+</head>
+<body>
+   
+    <h2>Student Information</h2>
+    <p><b>Name:</b> <%= student.getName() %></p>
+    <p><b>Roll No:</b> <%= student.getRollNo() %></p>
+    <p><b>Email:</b> <%= student.getEmail() %></p>
+    <p><b>Course:</b> <%= student.getCourse() %></p>
+</body>
+</html>
+
+Methods:
+1.	JavaBeans – A reusable Java class with private fields and public getters/setters.
+2.	Getter and Setter Methods – Used for encapsulation and accessing/modifying bean properties.
+3.	HTML Form – Collects user input and sends it to the JSP page via POST request.
+4.	request.getParameter() – Retrieves form data from the HTTP request.
+5.	Bean Object Creation – Bean is manually created and populated in JSP using new Student().
+6.	Data Display with Getters – JSP uses bean’s getter methods to display stored values.
+
+Conclusion
+This program demonstrates how to integrate JavaBeans with JSP to maintain a clear separation of business logic (Java class) from presentation logic (JSP). The bean stores and retrieves student information, making the application modular and reusable.
+
+
+
+
+
+
+
+
+
+
+Output:
+ 
+ 
+ 
+
+Q.7) Using JSF Standard Component and Facelet Tags.
+Aim
+To develop a JavaServer Faces (JSF) web application in NetBeans that uses JSF standard UI components for creating a student details form and displaying submitted data.
+
+Objective
+1.	To understand the usage of JSF Standard Components such as <h:form>, <h:inputText>, <h:commandButton>, <h:outputText>, and <h:panelGrid>.
+2.	To implement Facelets templating using <ui:composition>.
+3.	To bind JSF components to a Managed Bean for data storage and retrieval.
+4.	To create a simple navigation between form and result pages without Jakarta namespace.
+
+Code:
+index.xhtml
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>User Details</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGrid columns="2" cellpadding="5">
+                <h:outputLabel for="t1" value="Name:" />
+                <h:inputText id="t1" value="#{test.name}" />
+
+                <h:outputLabel for="t2" value="Surname:" />
+                
+                 <h:inputText id="t2" value="#{test.surname}" />
+            </h:panelGrid>
+
+            <br/>
+            <h:commandButton value="Submit" action="#{test.show}" />
+        </h:form>
+    </h:body>
+</html>
+
+result.xhtml
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+ <h:head>
+        <title>User Details</title>
+ </h:head>
+  <h:body>
+        #{test.name}
+        #{test.surname}
+  </h:body>
+</html>
+
+
+student.java 
+package mypack;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+
+@ManagedBean(name="test")
+@RequestScoped
+ public class student {
+ String name, surname;
+
+ public String getName() {
+        return name;
+  }
+
+  public void setName(String name) {
+        this.name = name;
+  }
+
+  public String getSurname() {
+        return surname;
+  }
+
+  public void setSurname(String surname) {
+        this.surname = surname;
+  }
+  
+   public String show(){
+            if(name.equalsIgnoreCase("Akshat")){
+                return "Success";
+            }
+       
+      else{
+               return "Fail";
+             }
+        }
+     }
+
+faces-config.xml
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <navigation-rule>
+        <from-view-id>/index.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>Fail</from-outcome>
+            <to-view-id>/result.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>Success</from-outcome>
+            <to-view-id>/result.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>
+
+Methods:
+1) JSF Standard Components:
+•	<h:form> – Defines a form for user input.
+•	<h:outputLabel> – Displays labels for input fields.
+•	<h:inputText> – Accepts text input from the user.
+•	<h:commandButton> – Submits the form and navigates to another page.
+•	<h:panelGrid> – Arranges output data in a tabular grid format.
+2) Managed Bean:
+•	@ManagedBean annotation – Declares a bean accessible in JSF pages via EL (#{beanName}).
+
+•	@SessionScoped – Maintains bean data for the entire user session.
+
+3) Navigation:
+•	The action attribute in <h:commandButton> triggers navigation from index.xhtml to result.xhtml.
+
+Conclusion
+This experiment demonstrates how to build a JSF web application using JSF standard UI components for input/output. It shows the interaction between a Managed Bean and JSF pages to process and display user-submitted data. The use of session scope ensures that the data persists during the session, and navigation between pages is handled seamlessly using the action attribute.
+
+Output:
+ 
+ 
+ 
+
+Q.8) Demonstrate an EJB application that demonstrates Session Bean (with appropriate business logic).
+Aim
+To develop an Enterprise JavaBean (EJB) application that demonstrates the use of a Stateless Session Bean for implementing a simple business logic of currency conversion and accessing it through a servlet.
+Objective
+1.	To understand the concept of Session Beans in EJB.
+2.	To implement a Stateless Session Bean that provides business logic (currency conversion).
+3.	To integrate the Session Bean with a Servlet using @EJB annotation.
+4.	To demonstrate client-server interaction where the servlet acts as a client and the EJB provides business services.
+5.	To configure servlet mapping in web.xml for handling requests.
+
+Code:
+index.xhtml
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Currency Converter</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <form action="first" method="get">
+            Username:<input type="text" name= "t1"><br><br>
+            Currency:<input type="text" name="t2"><br><br>
+            <input type="submit" value="Submit"><br>
+        </form>
+    </body>
+</html>
+
+CurrencyConvertor.java
+package mypack;
+import javax.ejb.Stateless;
+
+@Stateless
+public class CurrencyConvertor {
+
+    String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double show(double a) {
+        return a * 87;
+    }
+    
+}
+
+first.java 
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.ejb.EJB;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+
+import javax.servlet.http.HttpServletResponse;
+import mypack.CurrencyConvertor;
+
+public class first extends HttpServlet {
+@EJB
+private CurrencyConvertor currencyConvertor;
+
+@Override
+public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException,    ServletException {
+     response.setContentType("text/html");
+     PrintWriter out= response.getWriter();
+  double b = Double.parseDouble(request.getParameter("t2"));
+  double c = currencyConvertor.show(b);
+  out.println(c);
+  String a = request.getParameter("t1");
+      }
+}
+
+faces-config.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>first</servlet-name>
+        <servlet-class>first</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>first</servlet-name>
+        
+         <url-pattern>/first</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
+
+Methods
+1.	@Stateless – Defines the EJB as a Stateless Session Bean, which does not maintain client-specific state.
+2.	Business Method (show) – Implements the logic to convert currency by multiplying the given amount with a fixed rate.
+3.	@EJB Injection – The servlet (first.java) uses the @EJB annotation to inject and access the CurrencyConvertor bean.
+4.	doGet() – Handles the request from the HTML form, retrieves user input, invokes the EJB method, and displays the result.
+5.	setContentType() – Sets the type of the response as HTML.
+6.	getWriter() – Sends the output back to the client.
+
+Conclusion
+This experiment demonstrates how to create and use a Stateless Session Bean in EJB for business logic implementation. The bean encapsulates the currency conversion logic, while the servlet acts as a client that interacts with the bean using dependency injection. This shows the separation of concerns between business logic and presentation, making the application modular, reusable, and scalable.
+
+
+
+
+
+
+Output:
+ 
+ 
